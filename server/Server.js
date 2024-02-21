@@ -26,14 +26,16 @@ app.use(morgan('dev'))
 app.use(express.json())
 
 app.use(cors({
-  origin: ['http://localhost:3000','https://ecommerce.ishrakhasin.com'],
+  origin: ['https://localhost:3000','https://ecommerce.ishrakhasin.com'],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 }
 
 ))
 
-
+app.get('/',(req,res)=>{
+  res.send('Your api is live ')
+})
 
 
 //routes
