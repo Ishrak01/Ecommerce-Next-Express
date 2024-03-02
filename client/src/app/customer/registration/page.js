@@ -1,10 +1,12 @@
 "use client"
+import accessBlock from "@/accessBlock";
 import { useRegisterMutation } from "@/app/redux/features/auth/authApi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 
 const Register = () => {
+ 
 const router=useRouter();
   
 
@@ -142,4 +144,4 @@ const router=useRouter();
   );
 };
 
-export default Register;
+export default accessBlock(Register);

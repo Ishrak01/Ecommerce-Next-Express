@@ -1,10 +1,13 @@
 const express = require('express');
+const checkLogin=require("../middleware/checkLogin")
 const {
     ForgotPassword,
     GetAllUser,
     ResetPassword,
     loginController,
-    registerController
+    registerController,
+    getProfile,
+    updateProfile
 } = require('../Controller/authController.js');
 
 
@@ -22,6 +25,10 @@ router.post('/login',loginController)
 router.get('/getUser',GetAllUser)
 router.post('/forgotPassword',ForgotPassword)
 router.post('/resetPassword/:id/:token',ResetPassword)
+
+
+router.get('/getProfile',checkLogin,getProfile)
+router.put('/updateProfile',checkLogin,updateProfile)
 
 
 

@@ -1,8 +1,8 @@
 "use client"
-
 import { useGetProductsByCategoryQuery } from '@/app/redux/features/admin/adminApi';
 import { useAddToCartMutation } from '@/app/redux/features/cart/cartApi';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 const FindByCategory = ({ params }) => {
   const { id } = params;
@@ -17,7 +17,7 @@ const FindByCategory = ({ params }) => {
 
   const handleAddToCart = (productId) => {
     addtoCart({ userId, productId });
-    alert("cart added")
+    toast.success('Item added to cart!')
   };
 
   if (isLoading) {

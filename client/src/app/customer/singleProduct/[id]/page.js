@@ -1,7 +1,7 @@
 "use client"
-
 import { useSingleProductQuery } from "@/app/redux/features/admin/adminApi";
 import { useAddToCartMutation } from "@/app/redux/features/cart/cartApi";
+import toast from "react-hot-toast";
 
 const SingleProductView = ({ params }) => {
   const { id } = params;
@@ -13,7 +13,7 @@ const SingleProductView = ({ params }) => {
 
   const handleAddToCart = (productId) => {
     addToCart({ userId, productId });
-    alert('Cart product added');
+ toast.success("item added to cart")
   };
 
   return (

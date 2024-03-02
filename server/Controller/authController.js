@@ -57,7 +57,7 @@ exports.loginController= async(req,res)=>{
         }
         
 //token 
-        const token= jwt.sign({id:user._id,name:user.name},process.env.JWT_SECRET,{expiresIn:"1h"})  
+        const token= jwt.sign({id:user._id,name:user.name},process.env.JWT_SECRET,{expiresIn:"9h"})  
         res.status(200).send({message:"login successfull",user:{
             name:user.name,
             _id:user._id,
@@ -208,5 +208,69 @@ exports.GetAllUser= async (req,res)=>{
 }
 
 
+        
+exports.getProfile = async (req, res) => {
+    try {
+        // Extract the token from the headers
+        const token = req.headers.authorization.split(' ')[1];
+        
 
+        // Verify the token
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET); // replace 'yourSecretKey' with your actual secret key
+        console.log(decodedToken)
+        // Use the user ID from the decoded token to fetch the user profile
+        const user = await userModel.findById(decodedToken.id);
 
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        if (error.name === 'JsonWebTokenError') {
+            // Token is invalid or expired
+            res.status(401).json({ message: 'Invalid token' });
+        } else {
+            // Other errors
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+};
+
+exports.updateProfile = async (req, res) => {
+    try {
+        // console.log(req.body)
+        // Extract the token from the headers
+        const token = req.headers.authorization.split(' ')[1];
+
+        // Verify the token
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET); // replace 'yourSecretKey' with your actual secret key
+
+        // Use the user ID from the decoded token to find and update the user profile
+        const user = await userModel.findById(decodedToken.id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Update the user profile with the data from the request body
+        user.name = req.body.data.name || user.name;
+        user.email = req.body.data.email || user.email;
+        user.phone = req.body.data.phone || user.phone;
+        user.address = req.body.data.address || user.address;
+        // Add more fields as needed
+
+        // Save the updated user profile
+        await user.save();
+
+        res.status(200).json({ message: 'Profile updated successfully', user });
+    } catch (error) {
+        if (error.name === 'JsonWebTokenError') {
+            // Token is invalid or expired
+            res.status(401).json({ message: 'Invalid token' });
+        } else {
+            // Other errors
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+};

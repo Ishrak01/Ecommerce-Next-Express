@@ -10,7 +10,8 @@ const store= configureStore({
     [apiSlice.reducerPath]: apiSlice.reducer,
     
     cart:cartReducer,
-    admin:adminReducer
+    admin:adminReducer,
+   
   },
 
   devTools:"",

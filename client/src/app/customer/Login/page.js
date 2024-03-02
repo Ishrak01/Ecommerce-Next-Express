@@ -1,9 +1,11 @@
 "use client"
+import toast from "react-hot-toast";
 
 import { useLoginMutation } from "@/app/redux/features/auth/authApi";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import accessBlock from "@/accessBlock";
 import { useRouter } from "next/navigation";
 
 const Login = () => {
@@ -23,15 +25,21 @@ const Login = () => {
     });
   };
 
+
   useEffect(() => {
     if (data?.token && data?.user) {
-      console.log(data);
-      alert("login successsfull");
-      
-      router.push("/");
-     
+        
+        toast.success('Successfully logged in!');
+        router.push("/");
+      } else if (data?.error) {
+        // Handle specific case where email is not found
+        toast.error(data.error);
+    } else if (data?.message) {
+        // Password doesn't match, display an error message
+        toast.error(data.message);
     }
-  }, [data, router]);
+}, [data, router]);
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -98,4 +106,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default accessBlock(Login);

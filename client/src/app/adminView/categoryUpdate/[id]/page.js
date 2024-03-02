@@ -47,7 +47,7 @@ const updateCategorypage = ({params}) => {
   
   })
   }
-  console.log(name,photo,details,id)
+  
   useEffect(()=>{
     if(updatedCategory){
       alert("product updated")

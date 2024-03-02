@@ -8,7 +8,12 @@ const authRoute = require('./Route/authRoute.js');
 const cartRoute = require('./Route/cartRoute.js');
 const categoryRoute = require('./Route/categoryRoute.js');
 const productRoute = require('./Route/productRoute.js');
+const orderRoute=require("./Route/orderRoute")
+
+
 const connectDB = require('./config/DB.js');
+
+
 
 
 
@@ -26,7 +31,7 @@ app.use(morgan('dev'))
 app.use(express.json())
 
 app.use(cors({
-  origin: ['https://localhost:3000','https://ecommerce.ishrakhasin.com'],
+  origin: ['http://localhost:3000','https://client-tau-wine.vercel.app'],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 }
@@ -43,6 +48,9 @@ app.use('/',productRoute)
 app.use('/',authRoute)
 app.use('/',categoryRoute)
 app.use('/',cartRoute)
+app.use('/',orderRoute)
+
+
 
 //run server
 const PORT=process.env.PORT || 5500

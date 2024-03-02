@@ -1,10 +1,12 @@
 const express = require('express');
+const checkLogin=require('../middleware/checkLogin')
 const {
     addtoCart,
     deleteCartItem,
     getCart,
     getCartItemById,
-    updateCartItem
+    updateCartItem,
+    getTotalCostByUserId
 } = require('../Controller/cartController.js');
 
 //router onject
@@ -16,11 +18,12 @@ const router=express.Router()
 
 
 //routing
-router.post('/addToCart',addtoCart)
-router.get('/getAllCartItems/:id',getCart)
-router.get('/getCartItemById',getCartItemById)
-router.put('/updateCartItem/:id',updateCartItem)
-router.delete('/deleteCartItem/:id',deleteCartItem)
+router.post('/addToCart',checkLogin,addtoCart)
+router.get('/getAllCartItems/:id',checkLogin,getCart)
+router.get('/getCartItemById/:id',checkLogin,getCartItemById)
+router.put('/updateCartItem/:id',checkLogin,updateCartItem)
+router.delete('/deleteCartItem/:id',checkLogin,deleteCartItem)
+router.get('/getTotalPrice/:id',checkLogin,getTotalCostByUserId)
 
 
 

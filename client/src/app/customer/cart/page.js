@@ -1,3 +1,4 @@
+
 "use client"
 
 import {
@@ -5,7 +6,8 @@ import {
   useRemoveCartItemMutation,
   useUpdateCartItemMutation
 } from "@/app/redux/features/cart/cartApi";
-
+import { withAuth } from "@/withAuth";
+import Link from "next/link";
 
 
 
@@ -29,7 +31,8 @@ const Cart = () => {
   const [removeCartItem] = useRemoveCartItemMutation();
 
   const handleUpdateCartItem = (cartItemId, productId, quantity) => {
-    updateCartItem({ cartItemId, productId, quantity });
+    
+    updateCartItem({ cartItemId, productId, quantity: Math.max(quantity, 1) });
   };
 
   const handleRemoveCartItem = (cartItemId) => {
@@ -46,30 +49,28 @@ const Cart = () => {
   }
 
   const calculateTotalPrice = () => {
+    if (!cartItems) {
+      return 0; // or handle it in a way that makes sense for your application
+    }
+  
     return cartItems.reduce((total, item) => total + item.productId.price * item.quantity, 0);
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-4 bg-white shadow-md rounded-md h-screen">
-      <h2 className="text-2xl text-black font-bold mb-4">Shopping Cart</h2>
-      {!cartItems || cartItems.length === 0 ? (
-        <p className="text-red-700 font-extrabold">Your cart is empty. Go for Shopping.....</p>
-      ) : (
-        <div>
-          <ul>
-            {cartItems?.map((item) => (
-              <li key={item.userId} className="flex items-center text-black justify-between border-b border-gray-300 py-2">
-                <div className="flex items-center space-x-4">
-                  <img className="h-[60px]" src={item.productId.photo} alt={item.productId.name} />
-                  <div>
-                    <span className="font-bold">{item.productId.name}</span>
-                    <br />
-                    {item.productId.price} BDT <br />
-                    Quantity: {item.quantity}
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <button
+    <div className="flex  gap-10 mx-20">
+    
+        <title>Shopping Cart</title>
+     
+      <div className="w-1/2 p-8 bg-gray-200">
+        <h2 className="text-2xl font-bold mb-4">Shopping Cart</h2>
+        <ul>
+        {cartItems?.map((item) => (
+            <li key={item.userId} className="mb-4 flex justify-between items-center">
+               <div><img className="h-[60px] w-[60px]" src={item.productId.photo} alt={item.productId.name} />
+              {item.productId.name} </div>
+
+              <div>
+              <button
                     onClick={() => handleUpdateCartItem(item._id, item.productId._id, item.quantity + 1)}
                     className="px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                   >
@@ -87,22 +88,37 @@ const Cart = () => {
                   >
                     Remove
                   </button>
-                </div>
-                <span>{item.productId.price * item.quantity} BDT</span>
-              </li>
-            ))}
-          </ul>
-          {/* Display total price and checkout button */}
-          <div className="mt-4 flex justify-between items-center">
-            <span className="font-bold text-lg">Total: {calculateTotalPrice()} BDT</span>
-            <button className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
-              Checkout
-            </button>
-          </div>
+              </div>
+               BDT {item.productId.price} x {item.quantity}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="w-1/4   p-8 bg-gray-300">
+        <h2 className="text-2xl font-bold mb-4">Order Summary</h2>
+        {/* Add your checkout form or relevant content here */}
+        <div className="flex justify-between"> 
+        <h1>Subtotal</h1>
+        <h1>{calculateTotalPrice()}</h1>
         </div>
-      )}
+
+
+       <div className="flex justify-between">
+       <p>Shipping Fee</p> <h1>0</h1>
+       </div>
+
+<div className="flex justify-between">
+<p>Total: </p><p>{calculateTotalPrice()}</p>
+</div>
+        
+        
+        <br/>
+        <hr/>
+        <br/>
+        <Link href={`/customer/order/${userId}`} className=" border-4 bg-[#BE185D]">Proceed To Checkout</Link>
+      </div>
     </div>
   );
-};
+}
 
-export default Cart
+export default withAuth(Cart);

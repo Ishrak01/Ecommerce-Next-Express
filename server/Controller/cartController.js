@@ -1,4 +1,6 @@
-const cartModel=require('../model/cartModel')
+const cartModel=require('../model/cartModel');
+const productModel = require('../model/productModel');
+const userModel=require("../model/userModel")
 
 
 exports.addtoCart=async(req,res)=>{
@@ -62,32 +64,52 @@ exports.getCartItemById = async (req, res) => {
   }
 };
 
-// Update a cart item by ID
-exports.updateCartItem= async(req,res)=>{
+
+
+exports.updateCartItem = async (req, res) => {
   try {
-    const cartItemId=req.params.id
-    const{productId,quantity}=req.body
+    const cartItemId=req.params.id // Assuming cartItemId is passed as a parameter
+    const { productId, quantity } = req.body;
 
-    if (!cartItemId || !quantity || !productId) {
-      return res.status(400).json({ error: "cartItemId and quantity are required" });
+    console.log(cartItemId, productId, quantity);
+
+    // Input validation
+    if (!cartItemId || !productId || !quantity) {
+      return res.status(400).json({ error: "cartItemId, productId, and quantity are required" });
     }
 
-    const cartItem= await cartModel.findByIdAndUpdate(cartItemId)
-    console.log("+++++++++++++",cartItem)
-    if (!cartItem) {
-      return res.status(404).json({ error: 'Cart item not found' });
+    const existingCartItem = await cartModel.findById(cartItemId);
+
+    if (!existingCartItem) {
+      return res.status(404).json({ error: "CartItem not found" });
     }
-    
-    cartItem.quantity=quantity
-    await cartItem.save()
-    return res.status(200).json(cartItem);
 
+    // Fetch the related product to get the price
+    const relatedProduct = await productModel.findById(productId);
 
+    if (!relatedProduct) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    // Update the cart item with the new productId and quantity
+    existingCartItem.productId = productId;
+    existingCartItem.quantity = quantity;
+
+    // Calculate total cost based on the product's price and quantity
+    const itemPrice = relatedProduct.price;
+    const totalCost = itemPrice * quantity;
+
+    existingCartItem.totalCost = totalCost;
+
+    // Save the updated cart item
+    await existingCartItem.save();
+
+    return res.status(200).json(existingCartItem);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
-}
+};
 
 
 // Delete a cart item by ID
@@ -109,3 +131,72 @@ exports.deleteCartItem=async(req,res)=>{
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 }
+
+
+
+// exports.getTotalCostByUserId = async (req, res) => {
+//   try {
+//     const userId = req.params.id; // Assuming userId is passed as a parameter
+
+//     // Input validation
+//     if (!userId) {
+//       return res.status(400).json({ error: "userId is required" });
+//     }
+
+//     // Find the user by userId
+//     const user = await userModel.findById(userId);
+
+//     if (!user) {
+//       return res.status(404).json({ error: "User not found" });
+//     }
+
+//     // Retrieve the user's cart items
+//     const userCartItems = await cartModel.find({ userId: userId });
+
+//     // Calculate the total cost by summing up the totalCost property for each cart item
+//     const totalCost = userCartItems.reduce((sum, cartItem) => sum + cartItem.totalCost, 0);
+   
+
+//     return res.status(200).json({ userId, totalCost });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// };
+
+exports.getTotalCostByUserId = async (req, res) => {
+  try {
+    const userId = req.params.id; // Assuming userId is passed as a parameter
+
+    // Input validation
+    if (!userId) {
+      return res.status(400).json({ error: "userId is required" });
+    }
+
+    // Find the user by userId
+    const user = await userModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Retrieve the user's cart items
+    const userCartItems = await cartModel.find({ userId: userId }).populate('productId');
+
+    // Calculate the total cost by summing up the calculated totalCost property for each cart item
+    const totalCost = userCartItems.reduce((sum, cartItem) => {
+      const quantity = cartItem.quantity || 1;
+
+      // Assuming each cart item has a "productId" and "quantity" property
+      const itemPrice = cartItem.productId.price || 0;
+      const itemTotalCost = itemPrice * quantity;
+
+      return sum + itemTotalCost;
+    }, 0);
+
+    return res.status(200).json({ userId, totalCost });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};

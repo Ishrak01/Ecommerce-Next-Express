@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 
-const PasswordReset = (params) => {
+const PasswordReset = ({params}) => {
   const router=useRouter()
   const { id, token } = params;
   const [password, setPassword] = useState("");

@@ -2,7 +2,7 @@ import { apiSlice } from "../api/apiSlice";
 
 export const cartApi= apiSlice.injectEndpoints({
   
-  tagTypes:["cart","delete","update"],
+  tagTypes:["cart","delete","update","price"],
   endpoints:(builder)=>({
   getCart:builder.query({
     query:(userId)=>({
@@ -20,7 +20,7 @@ export const cartApi= apiSlice.injectEndpoints({
       method: 'POST',
       body: {userId, productId},
     }),
-    invalidatesTags:['cart']
+    invalidatesTags:['cart','price']
   }),
 
   updateCartItem: builder.mutation({
@@ -29,7 +29,7 @@ export const cartApi= apiSlice.injectEndpoints({
       method: 'PUT',
       body: { productId, quantity },
     }),
-    invalidatesTags:['update']
+    invalidatesTags:['update','price']
   }),
 
   removeCartItem: builder.mutation({
@@ -42,7 +42,30 @@ export const cartApi= apiSlice.injectEndpoints({
    
   }),
 
-  })
+  getTotalPrice:builder.query({
+    query:(id)=>({
+      url:`/getTotalPrice/${id}`,
+      method:"GET"
+    }),
+      
+    providesTags: ['price','cart']
+    
+  }),
+
+  
+  orderCreate:builder.mutation({
+    query:(data)=>({
+      url: "/orderCreate",
+      method: 'POST',
+      body:data
+    }),
+  
+ 
+  }),
+
 })
 
-export const {useGetCartQuery,useAddToCartMutation,useUpdateCartItemMutation,useRemoveCartItemMutation}=cartApi
+  })
+
+
+export const {useGetCartQuery,useAddToCartMutation,useUpdateCartItemMutation,useRemoveCartItemMutation,useGetTotalPriceQuery,useOrderCreateMutation}=cartApi
