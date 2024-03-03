@@ -7,7 +7,8 @@ export const apiSlice= createApi({
   reducerPath: 'api',
   
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5500",
+    // baseUrl: "http://localhost:5500",
+    baseUrl: "https://ecommerceserver.ishrakhasin.com",
     prepareHeaders: (headers) => {
        // Retrieve the token from local storage
        const auth = localStorage.getItem('auth');
