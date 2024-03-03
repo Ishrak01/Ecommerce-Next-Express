@@ -26,7 +26,8 @@ const Dropdown = () => {
     const auth = JSON.parse(authData);
     // Check if "user" property exists
     if (auth && auth.user && auth.user.name) {
-      userName = auth.user.name;
+      const userNameArray = auth.user.name.split(" ");
+      userName = userNameArray[0];
     }
   }
   
@@ -47,7 +48,7 @@ const Dropdown = () => {
           id="options-menu"
           onClick={toggleDropdown}
         >
-          Hello, {userName}
+       Hi,{userName}
         </button>
       </div>
 

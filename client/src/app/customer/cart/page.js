@@ -13,30 +13,30 @@ import Link from "next/link";
 
 
 const Cart = () => {
+  let userId;
 
- let userId
-  
- 
+  if (typeof localStorage !== 'undefined' && localStorage.getItem("auth")) {
+    userId = JSON.parse(localStorage.getItem("auth")).user._id;
+  }
 
- if (typeof localStorage !== 'undefined' && localStorage.getItem("auth")) {
-  userId = JSON.parse(localStorage.getItem("auth")).user._id;
-
- }
-  
-  
-
-
-  const { data: cartItems, isLoading } = useGetCartQuery(userId);
+  const { data: cartItems, isLoading:newLoad } = useGetCartQuery(userId);
   const [updateCartItem, { isLoading: loading }] = useUpdateCartItemMutation();
   const [removeCartItem] = useRemoveCartItemMutation();
 
   const handleUpdateCartItem = (cartItemId, productId, quantity) => {
-    
     updateCartItem({ cartItemId, productId, quantity: Math.max(quantity, 1) });
   };
 
   const handleRemoveCartItem = (cartItemId) => {
     removeCartItem(cartItemId);
+  };
+
+  const calculateTotalPrice = () => {
+    if (!cartItems) {
+      return 0;
+    }
+
+    return cartItems.reduce((total, item) => total + item.productId.price * item.quantity, 0);
   };
 
   if (loading) {
@@ -46,15 +46,29 @@ const Cart = () => {
         <p className="text-gray-600">Loading...</p>
       </div>
     );
-  }
-
-  const calculateTotalPrice = () => {
-    if (!cartItems) {
-      return 0; // or handle it in a way that makes sense for your application
     }
+  if (newLoad) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full border-t-4 border-opacity-25 border-r-4 border-gray-300 h-16 w-16 mb-4"></div>
+        <p className="text-gray-600">Loading...</p>
+      </div>
+    );
+    }
+
+  if (!cartItems || cartItems.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-screen flex-col">
+        <p className="text-gray-600 font-extrabold">Your cart is empty!</p>
+        <br/>
+        
+        <Link href="/">Go to Homepage</Link>
+      </div>
+    );
+  }
   
-    return cartItems.reduce((total, item) => total + item.productId.price * item.quantity, 0);
-  };
+
+
 
   return (
     <div className="flex  gap-10 mx-20">

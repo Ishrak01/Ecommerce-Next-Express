@@ -30,7 +30,7 @@ const ProductDetails = () => {
           {/* Add more sidebar items as needed */}
           <ul className="mt-4">
             <li className="mb-2">
-              <Link className="hover:text-gray-300" href="/adminView/productUpload">
+              <Link href="/adminView/productUpload" className="hover:text-gray-300" >
                 Product Upload
               </Link>
             </li>

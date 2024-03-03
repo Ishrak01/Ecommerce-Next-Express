@@ -1,7 +1,8 @@
 "use client"
 
+import accessBlock from "@/accessBlock";
 import { useResetPasswordMutation } from "@/app/redux/features/auth/authApi";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 
@@ -27,7 +28,7 @@ const PasswordReset = ({params}) => {
 
   useEffect(() => {
     if (data) {
-      router.push("/Login");
+      router.push("/customer/Login");
     }
   }, [data, router]);
 
@@ -36,7 +37,7 @@ const PasswordReset = ({params}) => {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Log In
+            Set new password
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -90,4 +91,4 @@ const PasswordReset = ({params}) => {
   );
 };
 
-export default PasswordReset;
+export default accessBlock(PasswordReset);

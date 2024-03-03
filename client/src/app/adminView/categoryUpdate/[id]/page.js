@@ -1,5 +1,5 @@
 "use client"
-import { useSingleCategoryQuery, useUpdateCategoryMutation } from "@/app/redux/features/admin/adminApi";
+import { useGetCategoryQuery, useUpdateCategoryMutation } from "@/app/redux/features/admin/adminApi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -15,21 +15,21 @@ const updateCategorypage = ({params}) => {
 
 
 
-  const {data:singleCategory}=useSingleCategoryQuery(id)
+  const {data}=useGetCategoryQuery(id)
   
   const [updateCategory,{data:updatedCategory}]=useUpdateCategoryMutation()
 
   useEffect(()=>{
-    if(singleCategory){
-      console.log(singleCategory)
-      setName(singleCategory.name)
-      setPhoto(singleCategory.photo)
-      setDetails(singleCategory.details)
+    if(data){
+      console.log(data)
+      setName(data.name)
+      setPhoto(data.photo)
+      setDetails(data.details)
      
 
     }
-  },[singleCategory])
-
+  },[data])
+  console.log(data)
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -67,7 +67,7 @@ const updateCategorypage = ({params}) => {
   return (
     <div>
       <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-8 p-4 bg-gray-100 shadow-md rounded-md ">
-      <h2 className="text-2xl text-black font-bold mb-4">Add Category</h2>
+      <h2 className="text-2xl text-black font-bold mb-4">update Category</h2>
       <div className="mb-4">
         <label htmlFor="name" className="block text-sm font-semibold mb-2 text-black">
           Name

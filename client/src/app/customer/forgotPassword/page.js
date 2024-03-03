@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import accessBlock from "@/accessBlock";
 import { useForgotPasswordMutation } from "@/app/redux/features/auth/authApi";
 
 const ForgotPassword = () => {
@@ -67,4 +68,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default accessBlock(ForgotPassword);

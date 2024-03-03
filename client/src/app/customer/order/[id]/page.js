@@ -47,15 +47,15 @@ const Order = ({params}) => {
     }
   };
   
+  if (profileLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full border-t-4 border-opacity-25 border-r-4 border-gray-300 h-16 w-16 mb-4"></div>
+        <p className="text-gray-600">Loading...</p>
+      </div>
+    );
+    }
 
-
-      // The result of the mutation will be available in orderData.data
-      // if (orderData.data) {
-      //   alert("Order placed successfully!");
-      //   // You can also redirect or perform other actions based on the result
-      //   if (orderData.data.url) {
-      //     window.location.href = orderData.data.url; // Redirect to the fetched URL
-      //   }
   
 
 

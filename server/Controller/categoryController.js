@@ -4,6 +4,7 @@ const productModel = require('../model/productModel.js');
 
 exports.getCategory=async(req,res)=>{
   try {
+ 
     const categoryList=await categoryModel.find()
     if(!categoryList){
       res.status(500).json({success: false})
