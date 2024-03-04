@@ -15,10 +15,10 @@ import Link from "next/link";
 const Cart = () => {
   let userId;
 
-  if (typeof localStorage !== 'undefined' && localStorage.getItem("auth")) {
+  if (typeof window !== 'undefined' && localStorage.getItem("auth")) {
     userId = JSON.parse(localStorage.getItem("auth")).user._id;
   }
-
+  
   const { data: cartItems, isLoading:newLoad } = useGetCartQuery(userId);
   const [updateCartItem, { isLoading: loading }] = useUpdateCartItemMutation();
   const [removeCartItem] = useRemoveCartItemMutation();
