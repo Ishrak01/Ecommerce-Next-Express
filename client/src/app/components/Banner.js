@@ -16,24 +16,23 @@ const Banner = () => {
   }, [categories]);
 
   return (
-    <div className="h-[400px] relative overflow-hidden">
+    <div className="relative w-4/5 h-[300px] overflow-hidden">
       {categories &&
         categories.map((category, index) => (
           <div
             key={index}
-            className={`w-full absolute left-0 transition-opacity duration-500 ${
+            className={`absolute inset-0 transition-opacity duration-500 ${
               index === currentSlide ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            {/* Add your category content here */}
             <img
               src={category.photo}
               alt={`Category ${index + 1}`}
-              className="h-[380px] w-full px-[20px] md:px-[120px]"
+              className="w-full h-full object-cover"
             />
-            <div className="text-white text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <h2 className="text-2xl font-bold mb-2">{category.name}</h2>
-              <p className="text-sm">{category.description}</p>
+            <div className="absolute bottom-0 left-0 right-0 p-4  bg-opacity-50 text-white text-center">
+              
+             
             </div>
           </div>
         ))}

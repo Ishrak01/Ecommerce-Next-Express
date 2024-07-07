@@ -1,14 +1,11 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { FaCartPlus } from "react-icons/fa";
-import { TiThMenu } from "react-icons/ti";
+import { useDispatch, useSelector } from "react-redux";
 import Search from "../components/Search";
 
 import { useState } from "react";
-import logo from "../components/logo.svg";
 
-import { useDispatch } from "react-redux";
 import { userLoggedIn } from "../redux/features/auth/authSlice";
 import UserDetails from "./UserDetails";
 
@@ -33,62 +30,67 @@ const Navbar = () => {
 
   const logout = () => {
     localStorage.removeItem("auth");
-    //dispatch(userLoggedOut());
+
   };
 
+
+  // Retrieve cart items from Redux store
+  const cartItems = useSelector((state) => state.cart.cartItems);
+  const totalItems = cartItems.length;
+
   return (
-    <div className="flex h-14 justify-between items-center z-10 py-3 px-8 font-extrabold bg-pink-700 text-[#FFFFFF] sticky top-0">
-      <div className="flex  md:flex-row items-center justify-between gap-4 font-extrabold relative">
-        {!token ? (
-          <button onClick={toggleDropdown} className="block md:hidden">
-            <TiThMenu />
-          </button>
-        ) : (
-          <div></div>
-        )}
+    <div className=" p-2 border rounded-md  z-10  font-extrabold bg-red-500 text-[#FFFFFF] sticky top-0">
+      <div className="flex mx-[80px] justify-between items-center  gap-4 font-extrabold ">
+        <Link href="/">Ecommerce</Link>
 
-        {isDropdownOpen && (
-          <div className="relative w-full flex flex-col bg-blue-700 p-4  md:block">
-            <Link href="/customer/registration">Register</Link>
-            <Link href="/customer/Login">Login</Link>
-          </div>
-        )}
-
-        <Link href="/">
-          <Image src={logo} alt="Logo" />{" "}
-        </Link>
-      </div>
-
-      <div className="text-black items-center">
-        <Search />
-      </div>
-
-      {userRole === "admin" && (
-        <Link href="/adminView" className="text-blue-600 hover:underline">
-          Admin Panel
-        </Link>
-      )}
-
-      {token ? (
-        <UserDetails />
-      ) : (
-        <div className="flex gap-5 justify-around">
-          {/* Displayed on larger screens */}
-          <Link href="/customer/registration" className="hidden md:block">
-            <h1>Register</h1>
-          </Link>
-          <Link href="/customer/Login" className="hidden md:block">
-            <h1>Login</h1>
-          </Link>
-
-          {/* Always displayed, regardless of screen size */}
-          <div>
-            <Link href="/customer/cart">
-              <FaCartPlus className="h-6 w-8" />
-            </Link>
-          </div>
+        <div className="text-black ">
+          <Search />
         </div>
-      )}
+
+        <div>
+          {token ? (
+            <UserDetails />
+          ) : (
+            <div className="flex gap-5 ">
+
+              <Link href="/customer/registration">
+                <h1>Register</h1>
+              </Link>
+              <Link href="/customer/Login" >
+                <h1>Login</h1>
+              </Link>
+
+
+
+            </div>
+          )}
+        </div>
+
+
+        <div>
+          <Link href="/customer/cart">
+            <FaCartPlus className="h-6 w-8" />
+          </Link>
+          {totalItems > 0 && (
+            <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+              {totalItems}
+            </span>
+          )}
+        </div>
+
+        {userRole === "admin" && (
+          <Link href="/adminView" className="text-blue-600 hover:underline">
+            Admin Panel
+          </Link>
+        )}
+
+
+
+
+      </div>
+
+
+
     </div>
   );
 };

@@ -1,37 +1,67 @@
 import Link from "next/link";
-import { useGetCategoryQuery } from "../redux/features/admin/adminApi";
+import { useState } from "react";
+import { useGetCategoryQuery, useGetProductsByCategoryQuery } from "../redux/features/admin/adminApi";
 
 const Category = () => {
-  const { data: allCategory,isLoading:loading } = useGetCategoryQuery();
+  const { data: categories } = useGetCategoryQuery();
+  const [hoveredCategoryId, setHoveredCategoryId] = useState(null);
+  const [isHovered, setIsHovered] = useState(false);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full border-t-4 border-opacity-25 border-r-4 border-gray-300 h-16 w-16 mb-4"></div>
-        <p className="text-gray-600">Loading...</p>
-      </div>
-    );
-  }
+  const handleMouseEnter = (categoryId) => {
+    setHoveredCategoryId(categoryId);
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  const { data: productsByCat } = useGetProductsByCategoryQuery(hoveredCategoryId, {
+    skip: !hoveredCategoryId,
+  });
 
   return (
-    <div className="py-8 px-4 md:px-[120px]">
-      <h1 className="text-center text-2xl font-bold mb-6">Find Products by Categories</h1>
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {allCategory &&
-          allCategory.map((category) => (
-            <Link key={category._id} href={`/customer/findByCategory/${category._id}`}>
-              <div className="block bg-white p-4 rounded-lg shadow-md">
+    <div className="object-cover mb-4 block bg-white p-4 rounded-lg shadow-md">
+      <h2 className="font-bold">All Categories</h2>
+      {categories && categories.map((category) => (
+        <div
+          key={category._id}
+          className="relative"
+          onMouseEnter={() => handleMouseEnter(category._id)}
+          onMouseLeave={handleMouseLeave}
+        >
+          <Link href="" className="text-black text-xs font-bold">
+            <h1>{category.name}</h1>
+          </Link>
+          {(hoveredCategoryId === category._id && isHovered) && productsByCat && (
+            <div
+              className="fixed flex top-[100px] left-[200px] w-3/4 h-[270px] gap-2 p-4 bg-white border rounded-lg shadow-lg z-50"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              {productsByCat.length > 0 ? (
+                productsByCat.map((product) => (
+                  <div key={product._id} className="mb-2">
+                    <Link href={`/customer/singleProduct/${product._id}`}>
+                    <div className="block bg-white p-4 rounded-lg shadow-md">
                 <img
-                  src={category.photo}
-                  alt={category.name}
-                  className="h-40 w-full object-cover mb-4 text-black rounded-md"
+                  src={product.photo}
+                  alt={product.name}
+                  className="h-20 w-full object-cover mb-4 text-black rounded-md"
                 />
-                <h2 className="text-xl text-black font-semibold mb-2">{category.name}</h2>
+                <h2 className="text-sm text-black text-center font-semibold mb-2 truncate">{product.name}</h2>
                 {/* <p className="text-gray-600">{category.description}</p> */}
               </div>
-            </Link>
-          ))}
-      </div>
+                    </Link>
+                  </div>
+                ))
+              ) : (
+                <p className="text-xs">No products available.</p>
+              )}
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 };

@@ -1,20 +1,25 @@
-"use client"
+"use client";
 import { useSingleProductQuery } from "@/app/redux/features/admin/adminApi";
 import { useAddToCartMutation } from "@/app/redux/features/cart/cartApi";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 
 const SingleProductView = ({ params }) => {
+  const dispatch = useDispatch();
   const { id } = params;
   const { data } = useSingleProductQuery(id);
 
-  const authData = JSON.parse(localStorage.getItem("auth"));
+  const authData = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("auth")) : null;
   const userId = authData && authData.user ? authData.user._id : null;
-  const [addToCart] = useAddToCartMutation();
+  const [addToCart]=useAddToCartMutation()
 
-  const handleAddToCart = (productId) => {
-    addToCart({ userId, productId });
- toast.success("item added to cart")
-  };
+
+
+const handleAddToCart = (productId) => {
+  addToCart({ userId, productId });
+toast.success("item added to cart")
+};
+
 
   return (
     <div className="container mx-auto mt-8 p-4">
@@ -35,7 +40,7 @@ const SingleProductView = ({ params }) => {
             </p>
             <button
               className="bg-orange-600 text-black px-4 py-2 rounded-md hover:bg-primary-dark border"
-              onClick={() => handleAddToCart(data._id)}
+              onClick={() => handleAddToCart(data)}
             >
               Add to Cart
             </button>

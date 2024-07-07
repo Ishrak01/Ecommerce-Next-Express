@@ -1,20 +1,18 @@
-"use client"
-import toast from "react-hot-toast";
-
+"use client";
+import accessBlock from "@/accessBlock";
 import { useLoginMutation } from "@/app/redux/features/auth/authApi";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-
-import accessBlock from "@/accessBlock";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const Login = () => {
-  const router=useRouter()
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [login, { data, isLoading }] =useLoginMutation();
-  
+  const [login, { data, isLoading }] = useLoginMutation();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,21 +23,18 @@ const Login = () => {
     });
   };
 
-
   useEffect(() => {
     if (data?.token && data?.user) {
-        
-        toast.success('Successfully logged in!');
-        router.push("/");
-      } else if (data?.error) {
-        // Handle specific case where email is not found
-        toast.error(data.error);
+      toast.success('Successfully logged in!');
+      router.push("/");
+    } else if (data?.error) {
+      // Handle specific case where email is not found
+      toast.error(data.error);
     } else if (data?.message) {
-        // Password doesn't match, display an error message
-        toast.error(data.message);
+      // Password doesn't match, display an error message
+      toast.error(data.message);
     }
-}, [data, router]);
-
+  }, [data, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -50,10 +45,9 @@ const Login = () => {
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-         
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
-              <label htmlFor="username" className="sr-only">
+              <label htmlFor="email" className="sr-only">
                 Email
               </label>
               <input
@@ -63,34 +57,47 @@ const Login = () => {
                 autoComplete="email"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="email"
+                placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
-              <label htmlFor="email" className="sr-only">
+              <label htmlFor="password" className="sr-only">
                 Password
               </label>
               <input
-                id="Password"
-                name="Password"
-                type="Password"
-                autoComplete="Password"
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </div>
-
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <input
+                id="show-password"
+                name="show-password"
+                type="checkbox"
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                checked={showPassword}
+                onChange={() => setShowPassword(!showPassword)}
+              />
+              <label htmlFor="show-password" className="ml-2 block text-sm text-gray-900">
+                Show Password
+              </label>
+            </div>
+          </div>
           <div>
             <button
               type="submit"
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              
             >
               Login
             </button>

@@ -1,7 +1,9 @@
 "use client"
 import Banner from "./components/Banner";
+import Category from "./components/Category";
 import Footer from "./components/Footer";
-import Category from "./components/category";
+import Products from "./components/Products";
+
 
 
 
@@ -24,11 +26,15 @@ const Home = () => {
   
   return (
 
-    <div className="h-screen">
-      <div><Banner/></div>
+    <div className="">
+      <div className="mx-[80px] flex justify-between items-center">
+       <Category/>
+        <Banner/>
+       
+        </div>
       <br/>
       <hr/>
-      <div><Category/></div>
+      <div><Products/></div>
       <hr/>
       <div><Footer/></div>
       

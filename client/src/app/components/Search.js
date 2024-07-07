@@ -26,7 +26,7 @@ const SearchBar = () => {
   }
 
   return (
-    <div className="w-full  md:w-[800px] mx-auto">
+    <div className="  ">
       <form onSubmit={handleSearch} className="flex items-center">
         <label htmlFor="simple-search" className="sr-only">Search</label>
         <div className="relative w-full">

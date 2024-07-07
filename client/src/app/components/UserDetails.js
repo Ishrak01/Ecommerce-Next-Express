@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { useRouter } from "next/navigation";
-import { FaCartPlus } from "react-icons/fa";
 
 
 
@@ -44,7 +43,7 @@ const Dropdown = () => {
       <div className="relative inline-block text-left">
         <button
           type="button"
-          className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-6 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:bg-gray-200"
+          className=""
           id="options-menu"
           onClick={toggleDropdown}
         >
@@ -86,11 +85,7 @@ const Dropdown = () => {
           
         </div>
       )}
-      <div>
-            <Link href="/customer/cart">
-              <FaCartPlus className="h-6 w-8" />
-            </Link>
-          </div>
+    
     </div>
    
   );
